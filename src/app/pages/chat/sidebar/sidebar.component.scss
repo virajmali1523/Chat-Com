@@ -1,0 +1,161 @@
+.sidebar-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7f9fc;
+  min-height: 100vh;
+
+  .sidebar-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  .profile-view, .profile-form {
+    text-align: center;
+
+    h4 {
+      margin: 5px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 13px;
+      margin: 4px 0;
+      color: #444;
+    }
+
+    button {
+      margin: 10px 4px 0;
+      padding: 8px 14px;
+      font-size: 13px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:first-of-type {
+        background-color: #007bff;
+        color: white;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      &:last-of-type {
+        background-color: #dc3545;
+        color: white;
+
+        &:hover {
+          background-color: #b52b3a;
+        }
+      }
+    }
+  }
+
+  .image-preview {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 15px;
+
+    .upload-icon {
+      position: absolute;
+      bottom: -5px;
+      right: -5px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .form-group {
+      text-align: left;
+
+      label {
+        font-size: 13px;
+        margin-bottom: 3px;
+        color: #333;
+      }
+
+      input, textarea {
+        width: 100%;
+        padding: 7px;
+        font-size: 14px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      textarea {
+        resize: none;
+      }
+    }
+
+    .error {
+      color: #d9534f;
+      font-size: 13px;
+    }
+
+    .success {
+      color: #28a745;
+      font-size: 13px;
+    }
+
+    button[type='submit'] {
+      background-color: #28a745;
+      color: white;
+      font-size: 14px;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #218838;
+      }
+
+      &:disabled {
+        background-color: #888;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+
+    .sidebar-avatar,
+    .image-preview {
+      width: 70px;
+      height: 70px;
+    }
+
+    form {
+      .form-group {
+        input, textarea {
+          font-size: 13px;
+        }
+      }
+
+      button {
+        font-size: 13px;
+      }
+    }
+  }
+}

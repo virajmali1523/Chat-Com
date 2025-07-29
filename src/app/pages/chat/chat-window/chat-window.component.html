@@ -1,0 +1,147 @@
+<div class="chat-window">
+  <div class="chat-header" *ngIf="selectedChat">
+    <div class="chat-header-info">
+      <h3>{{ getOtherParticipantName() }}</h3>
+      <span class="chat-status">Online</span>
+    </div>
+  </div>
+
+  <div class="no-chat-selected" *ngIf="!selectedChat">
+    <div class="no-chat-content">
+      <div class="no-chat-icon">💬</div>
+      <h3>Select a chat to start messaging</h3>
+      <p>Choose a conversation from the chat list to begin chatting</p>
+    </div>
+  </div>
+
+  <div class="chat-messages" *ngIf="selectedChat" #messageContainer>
+    <div class="loading-messages" *ngIf="messages.length === 0 && !errorMessage">
+      <div class="loading-spinner"></div>
+      <span>Loading messages...</span>
+    </div>
+
+    <div class="error-message" *ngIf="errorMessage">
+      <span>{{ errorMessage }}</span>
+      <button (click)="sendMessage()" class="retry-btn">Retry</button>
+    </div>
+
+    <div class="messages-container" *ngIf="messages.length > 0">
+      <div 
+        *ngFor="let message of messages; trackBy: trackByMessageId" 
+        class="message-wrapper"
+        [ngClass]="{ 'own-message': isOwnMessage(message) }"
+      >
+        <div class="message">
+          <div class="message-avatar" *ngIf="!isOwnMessage(message)">
+            <img 
+              [src]="message.senderPhotoURL || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" 
+              [alt]="message.senderName"
+              class="avatar-img"
+            />
+          </div>
+
+          <div class="message-content">
+            <div class="message-header" *ngIf="!isOwnMessage(message)">
+              <span class="message-sender">{{ message.senderName }}</span>
+              <span class="message-time">{{ formatTimestamp(message.timestamp) }}</span>
+            </div>
+
+            <div class="message-text" *ngIf="message.type === 'text'">
+              {{ message.content }}
+            </div>
+
+            <div class="message-image" *ngIf="isImageMessage(message)">
+              <img 
+                [src]="message.fileURL" 
+                [alt]="message.fileName || 'Image'"
+                class="image-preview"
+                (click)="openImageInNewTab(message)"
+                title="Click to view full size"
+              />
+              <div class="image-info">
+                <span class="image-name">{{ message.fileName }}</span>
+                <span class="image-size" *ngIf="message.fileSize">{{ formatFileSize(message.fileSize) }}</span>
+              </div>
+            </div>
+
+            <div class="message-file" *ngIf="isFileMessage(message)">
+              <div class="file-preview" (click)="downloadFile(message)">
+                <div class="file-icon">{{ getFileIcon(message.fileType || '') }}</div>
+                <div class="file-info">
+                  <div class="file-name">{{ message.fileName }}</div>
+                  <div class="file-details">
+                    <span class="file-size" *ngIf="message.fileSize">{{ formatFileSize(message.fileSize) }}</span>
+                    <span class="file-type">{{ message.fileType }}</span>
+                  </div>
+                </div>
+                <div class="download-icon">⬇️</div>
+              </div>
+            </div>
+
+            <div class="message-footer" *ngIf="isOwnMessage(message)">
+              <span class="message-time">{{ formatTimestamp(message.timestamp) }}</span>
+              <span class="message-status" *ngIf="message.read">✓✓</span>
+              <span class="message-status" *ngIf="!message.read">✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages-end" *ngIf="messages.length > 0">
+      <span>End of messages</span>
+    </div>
+  </div>
+
+  <div class="chat-input-container" *ngIf="selectedChat">
+    <div class="upload-progress" *ngIf="isUploading">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+      </div>
+      <span class="progress-text">Uploading... {{ uploadProgress }}%</span>
+    </div>
+
+    <div class="input-wrapper">
+      <button 
+        (click)="openFileSelector()" 
+        class="file-button"
+        [disabled]="isLoading || isUploading"
+        title="Attach file"
+      >
+        📎
+      </button>
+
+      <input
+        #fileInput
+        type="file"
+        (change)="onFileSelected($event)"
+        accept="image/*,.pdf,.doc,.docx,.txt"
+        style="display: none;"
+      />
+
+      <textarea
+        #messageInput
+        [(ngModel)]="newMessage"
+        (keydown)="sendMessageOnEnter($event)"
+        placeholder="Type a message..."
+        class="message-input"
+        [disabled]="isLoading || isUploading"
+        rows="1"
+        (input)="autoResize($event)"
+      ></textarea>
+      
+      <button 
+        (click)="sendMessage()" 
+        class="send-button"
+        [disabled]="!newMessage.trim() || isLoading || isUploading"
+      >
+        <span *ngIf="!isLoading">Send</span>
+        <div class="send-spinner" *ngIf="isLoading"></div>
+      </button>
+    </div>
+    
+    <div class="typing-indicator" *ngIf="isLoading">
+      <span>Sending...</span>
+    </div>
+  </div>
+</div>

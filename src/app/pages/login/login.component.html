@@ -1,0 +1,49 @@
+<div class="login-container">
+  <h2>Welcome To ChatCom </h2>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+    
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        required
+        email
+        placeholder="you@example.com"
+        #emailInput="ngModel"
+      />
+      <div class="error" *ngIf="emailInput.invalid && emailInput.touched">
+        <small *ngIf="emailInput.errors?.['required']">Email is required.</small>
+        <small *ngIf="emailInput.errors?.['email']">Enter a valid email.</small>
+      </div>
+    </div>
+
+  
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        required
+        minlength="6"
+        placeholder="Enter your password"
+        #passwordInput="ngModel"
+      />
+      <div class="error" *ngIf="passwordInput.invalid && passwordInput.touched">
+        <small *ngIf="passwordInput.errors?.['required']">Password is required.</small>
+        <small *ngIf="passwordInput.errors?.['minlength']">Minimum 6 characters required.</small>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!loginForm.valid">Sign In</button>
+  </form>
+
+  <p class="register-link">
+    Don't have an account? <a routerLink="/register">Create one</a>
+  </p>
+</div>

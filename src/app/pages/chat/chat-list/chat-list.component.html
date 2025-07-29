@@ -1,0 +1,64 @@
+<div class="chat-list-container">
+  <h3>Chats</h3>
+
+  <div class="search-section">
+    <div class="search-type-selector">
+      <label for="searchType">Search by:</label>
+      <select 
+        id="searchType" 
+        [(ngModel)]="searchType" 
+        (change)="onSearchTypeChange()"
+        class="search-type-select">
+        <option value="name">Name</option>
+        <option value="email">Email</option>
+        <option value="uid">User ID</option>
+      </select>
+    </div>
+
+    <div class="search-input-container">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onSearchInput()"
+        [placeholder]="'Search by ' + getSearchTypeDisplayName().toLowerCase() + '...'"
+        class="search-input"
+      />
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <ul *ngIf="searchQuery && searchResults.length > 0" class="search-results">
+    <li *ngFor="let user of searchResults" (click)="startChatWithUser(user)" class="search-result-item">
+      <img [src]="user.photoURL || defaultProfilePic" class="chat-avatar" />
+      <div class="chat-info">
+        <div class="chat-name">{{ user.displayName }}</div>
+        <div class="chat-email" *ngIf="searchType === 'name' && user.email">{{ user.email }}</div>
+        <div class="chat-uid" *ngIf="searchType === 'name' && user.uid">ID: {{ user.uid }}</div>
+      </div>
+    </li>
+  </ul>
+
+  <div *ngIf="noUserFound && searchQuery" class="no-results">
+    No user found with {{ getSearchTypeDisplayName().toLowerCase() }}: "{{ searchQuery }}"
+  </div>
+
+  <div *ngIf="!searchQuery || searchQuery.trim() === ''">
+    <h4>Your Chats</h4>
+    <ul class="chat-list">
+      <li *ngFor="let chat of chatList" (click)="selectChat(chat)" class="chat-item">
+        <img [src]="chat.photoURL || defaultProfilePic" class="chat-avatar" />
+        <div class="chat-info">
+          <div class="chat-name">{{ chat.displayName }}</div>
+          <div class="chat-last-message">{{ chat.lastMessage || 'No messages yet' }}</div>
+        </div>
+      </li>
+    </ul>
+    
+    <div *ngIf="chatList.length === 0" class="no-chats">
+      No chats yet. Search for users to start a conversation!
+    </div>
+  </div>
+</div>

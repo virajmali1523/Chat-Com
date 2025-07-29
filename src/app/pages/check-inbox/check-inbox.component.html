@@ -1,0 +1,18 @@
+<div class="check-inbox-container">
+  <h2>Email Verification</h2>
+
+  <div *ngIf="loading">Checking status...</div>
+
+  <div *ngIf="!loading && email">
+    <p>Verification email was sent to: <strong>{{ email }}</strong></p>
+    <p>Please check your inbox and click the link to verify your email address.</p>
+
+    <div *ngIf="!isVerified">
+      <button (click)="refreshStatus()">I have verified my email</button>
+    </div>
+
+    <div *ngIf="isVerified">
+      <p class="verified">Email verified successfully! Redirecting...</p>
+    </div>
+  </div>
+</div>
