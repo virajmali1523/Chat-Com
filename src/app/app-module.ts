@@ -8,7 +8,7 @@ import { App } from './app';
 
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { EmailVerificationComponent } from './pages/email-verification/email-verification.component';
+
 import { CheckInboxComponent } from './pages/check-inbox/check-inbox.component';
 
 import { ChatComponent } from './pages/chat/chat.component';
@@ -30,7 +30,7 @@ import { environment } from '../environments/environment';
     App,
     LoginComponent,
     RegisterComponent,
-    EmailVerificationComponent,
+  
     CheckInboxComponent,
     ChatComponent,
     SidebarComponent,
