@@ -2,22 +2,26 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     
-    // User profile images
+
     match /users/{userId}/{fileName} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
-    // Chat files
+   
+    match /profile-pictures/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+   
     match /chat-files/{chatId}/{fileName} {
       allow read, write: if request.auth != null;
     }
     
-    // Chat images
+   
     match /chat-images/{chatId}/{imageId} {
       allow read, write: if request.auth != null;
     }
-    
-    // General images
+  
     match /images/{imageId} {
       allow read, write: if request.auth != null;
     }
