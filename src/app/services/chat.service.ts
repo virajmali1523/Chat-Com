@@ -111,6 +111,8 @@ export class ChatService {
         throw new Error('User not authenticated');
       }
 
+      console.log('Sending message:', { chatId, content, type, userId: user.uid });
+
       const messagesRef = collection(this.firestore, `chats/${chatId}/messages`);
       
       const messageData = {
@@ -123,6 +125,8 @@ export class ChatService {
         read: false
       };
 
+      console.log('Message data:', messageData);
+
       await addDoc(messagesRef, messageData);
 
       const chatRef = doc(this.firestore, `chats/${chatId}`);
@@ -131,8 +135,16 @@ export class ChatService {
         lastMessageTime: serverTimestamp()
       });
 
-    } catch (error) {
+      console.log('Message sent successfully');
+
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        chatId,
+        userId: this.currentUser.currentUser?.uid
+      });
       throw error;
     }
   }
@@ -168,7 +180,7 @@ export class ChatService {
 
       await addDoc(messagesRef, messageData);
 
-      // Update chat's last message
+    
       const chatRef = doc(this.firestore, `chats/${chatId}`);
       await updateDoc(chatRef, {
         lastMessage: content,
@@ -191,9 +203,22 @@ export class ChatService {
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
       return downloadURL;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file:', error);
-      throw new Error('Failed to upload file');
+      
+     
+      if (error.code === 'storage/unauthorized') {
+        console.error('Storage access denied. Check CORS configuration and storage rules.');
+        throw new Error('Storage access denied. Please check your permissions.');
+      } else if (error.code === 'storage/quota-exceeded') {
+        console.error('Storage quota exceeded.');
+        throw new Error('Storage quota exceeded. Please try again later.');
+      } else if (error.code === 'storage/network-request-failed') {
+        console.error('Network request failed. Check your internet connection.');
+        throw new Error('Network error. Please check your internet connection.');
+      }
+      
+      throw new Error('Failed to upload file. Please try again.');
     }
   }
 

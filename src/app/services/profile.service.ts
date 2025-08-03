@@ -31,9 +31,22 @@ export class ProfileService {
       const storageRef = ref(this.storage, filePath);
       await uploadBytes(storageRef, file);
       return await getDownloadURL(storageRef);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading image:', error);
-      throw error;
+      
+ 
+      if (error.code === 'storage/unauthorized') {
+        console.error('Storage access denied. Check CORS configuration and storage rules.');
+        throw new Error('Storage access denied. Please check your permissions.');
+      } else if (error.code === 'storage/quota-exceeded') {
+        console.error('Storage quota exceeded.');
+        throw new Error('Storage quota exceeded. Please try again later.');
+      } else if (error.code === 'storage/network-request-failed') {
+        console.error('Network request failed. Check your internet connection.');
+        throw new Error('Network error. Please check your internet connection.');
+      }
+      
+      throw new Error('Failed to upload image. Please try again.');
     }
   }
 
